@@ -48,7 +48,7 @@ demonstrating the need for the ability to retry leaving the group.
    and single recipient device messages can be interleaved.
 
    In practice messages can be reordered by SMTP server
-   because on temporary error message is postponed
+   because a temporary error message is postponed
    and another message that was sent later may be delivered first.
    Postfix+Dovecot server sometimes does this reordering even within
    a single machine. We ignore such reordering for simplicity.
@@ -81,7 +81,7 @@ demonstrating the need for the ability to retry leaving the group.
    and from device B send a message saying it has removed everyone from the group
    before device A was removed, effectively destroying the group.
 
-   We assume no device is going to do such attack.
+   We assume no device is going to do such an attack.
    Some security mechanism can be bolted on later,
    like ignoring messages from non-member devices
    if they appear to arrive significantly late,
@@ -146,30 +146,30 @@ is not guaranteed) given the following conditions:
 
 ### Immediate consistency
 
-If subset of devices S has empty reception queues
+If a subset of devices S has empty reception queues
 and the same view of the group memberlist
 and later always only modifies membership of devices outside the state S,
 then whenever devices in the set S have empty reception queues
 they have the same group memberlist.
 
 Less formally, as long as membership of some device is not modified,
-fetching all messages should be enough to get into state consistent
+fetching all messages should be enough to get into a state consistent
 with other similar devices.
 
 This property is tested in a simulation model.
 
 ## State transitions
 
-Initially there is one device
-that created the chat and has itself in the member list
-and all other devices have empty member list.
+Initially, there was one device
+that created the chat and has itself in the memberlist
+and all other devices have an empty member list.
 
 The following state transitions can happen during the simulation:
 
 1. Device that thinks it is currently a member
    adds another device to the chat.
 
-   It adds new device to its local member list
+   It adds a new device to its local member list
    and sends "Member added" message
    to all devices in the new member list
    by adding it to FIFO channels of all chat members.
@@ -201,19 +201,19 @@ device adds a new element with the flag set to true
 and the current timestamp,
 then sends out a message to all current members.
 
-Wher removing a member,
-devices adds a new element with the flag set to false
+When removing a member,
+a device adds a new element with the flag set to false
 and the current timestamp,
 then sends out a message to all current members
-and removed member.
+and the removed member.
 
 When receiving a message,
-client merges the received member list
+the client merges the received member list
 with its local member list.
 Timestamps in the received member list
 which appear to be in the future
 are corrected to the current timestamp.
-If timestamp is more than 60 days in the past,
+If the timestamp is more than 60 days in the past,
 it is replaced with 0.
 Elements with the flag set to false
 and timestamp equal to 0 are removed
@@ -222,7 +222,7 @@ indefinitely.
 
 ## Retry messages
 
-If device keeps receiving messages
+If the device keeps receiving messages
 while thinking that it is not part of the group,
 it should collect the list of the senders
 of messages and allow the user
@@ -239,8 +239,8 @@ This needs to prevent the following scenario:
 7. Carol receives "Member added" from Bob.
 8. Bob receives "Alice removes Bob" from Alice.
 
-Now Carol spams Alice and Bob forever
-while Alice and Bob think they are not part of the group.
+Now, Carol spams Alice and Bob forever, 
+and Alice and Bob think they are not part of the group.
 Alice and Bob should be able to send the retry message back.
 
 Without such retry messages
